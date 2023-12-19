@@ -1,0 +1,27 @@
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/sb_23_11_27_dev
+    username: root
+    password: lldj123414
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:h2:./sb_23_11_27_dev;MODE=MySQL
+  #    driverClassName: org.h2.Driver
+  #    username: sa
+  #    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 100
+logging:
+  level:
+    com.ll.sb231127: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE

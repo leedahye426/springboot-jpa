@@ -1,0 +1,52 @@
+package com.ll.sbjpa.domain.article.article.controller;
+
+import com.ll.sbjpa.domain.article.article.entity.Article;
+import com.ll.sbjpa.domain.article.article.service.ArticleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/article")
+public class ArticleController {
+    private final ArticleService articleService;
+
+    @GetMapping("/list")
+    public String list(
+            @RequestParam(value="page", defaultValue = "1") int page,
+            @RequestParam(value = "kwType", defaultValue = "title") List<String> kwTypes,
+            @RequestParam(value = "kw", defaultValue = "")  String kw,
+            Model model
+    ) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id")); // id 필드를 기준으로 내림차순 정렬
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.by(sorts));
+
+        Map<String, Boolean> kwTypesMap =  kwTypes
+                .stream()
+                .collect(Collectors.toMap(
+                        kwType -> kwType,
+                        kwType -> true
+                ));
+
+        Page<Article> itemsPage = articleService.search(kwTypes, kw, pageable);
+
+        model.addAttribute("itemsPage", itemsPage);
+        model.addAttribute("kwTypesMap",kwTypesMap);
+        model.addAttribute("page", page);
+        return "article/list";
+    }
+}
